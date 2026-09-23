@@ -26,7 +26,20 @@ def compile_headers(line):
     >>> compile_headers('      # this is not a header')
     '      # this is not a header'
     '''
-    return line
+    if line[:6] == '######':
+        return '<h6>' + line[6:] + '</h6>'
+    elif line[:5] == '#####':
+        return '<h5>' + line[5:] + '</h5>'
+    elif line[:4] == '####':
+        return '<h4>' + line[4:] + '</h4>'
+    elif line[:3] == '###':
+        return '<h3>' + line[3:] + '</h3>'
+    elif line[:2] == '##':
+        return '<h2>' + line[2:] + '</h2>'
+    elif line[:1] == '#':
+        return '<h1>' + line[1:] + '</h1>'
+    else:
+        return line
 
 
 def compile_italic_star(line):
@@ -50,7 +63,22 @@ def compile_italic_star(line):
     >>> compile_italic_star('*')
     '*'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='*':
+            j = line.find('*', i+1)
+            if j ==-1:
+                result += line[i:]
+                break
+            else:
+                result +='<i>' + line [i+1:j] + '</i>'
+                i = j + 1
+        else:
+            result += line [i]
+            i+=1
+    return result
 
 
 def compile_italic_underscore(line):
@@ -71,7 +99,23 @@ def compile_italic_underscore(line):
     >>> compile_italic_underscore('_')
     '_'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='_':
+            j = line.find('_', i+1)
+            if j ==-1:
+                result += line[i:]
+                break
+            else:
+                result +='<i>' + line [i+1:j] + '</i>'
+                i = j + 1
+        else:
+            result += line [i]
+            i+=1
+    return result
+
 
 
 def compile_strikethrough(line):
@@ -94,7 +138,22 @@ def compile_strikethrough(line):
     >>> compile_strikethrough('~~')
     '~~'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='~' and i+1<n and line[i+1] == '~':
+            j = line.find('~~', i+2)
+            if j ==-1:
+                result += line[i:]
+                break
+            else:
+                result +='<ins>' + line [i+2:j] + '</ins>'
+                i = j + 1
+        else:
+            result += line [i]
+            i+=1
+    return result
 
 
 def compile_bold_stars(line):
@@ -115,7 +174,22 @@ def compile_bold_stars(line):
     >>> compile_bold_stars('**')
     '**'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='*' and i+1<n and line[i+1] == '*':
+            j = line.find('**', i+2)
+            if j ==-1:
+                result += line[i:]
+                break
+            else:
+                result +='<b>' + line [i+2:j] + '</b>'
+                i = j + 2
+        else:
+            result += line [i]
+            i+=1
+    return result
 
 
 def compile_bold_underscore(line):
@@ -136,7 +210,22 @@ def compile_bold_underscore(line):
     >>> compile_bold_underscore('__')
     '__'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='_' and i+1<n and line[i+1] == '_':
+            j = line.find('__', i+2)
+            if j ==-1:
+                result += line[i:]
+                break
+            else:
+                result +='<b>' + line [i+2:j] + '</b>'
+                i = j + 2
+        else:
+            result += line [i]
+            i+=1
+    return result
 
 
 def compile_code_inline(line):
@@ -166,7 +255,23 @@ def compile_code_inline(line):
     >>> compile_code_inline('```python3')
     '```python3'
     '''
-    return line
+    result = ''
+    i = 0
+    n = len(line)
+    while i<n:
+        if line[i]=='`':
+            j = line.find('`', i+1)
+            if j ==-1:
+                result += line[i:]
+            else:
+                content = line [i+1:j]
+                content = content.replace('<','&lt;').replace('>','&gt;')
+                result +='<code>' + content + '</code>'
+                i = j + 1
+        else:
+            result += line [i]
+            i+=1
+    return result
 
 
 def compile_links(line):
