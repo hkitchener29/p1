@@ -291,7 +291,29 @@ def compile_links(line):
     >>> compile_links('this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040')
     'this is wrong: [course webpage](https://github.com/mikeizbicki/cmc-csci040'
     '''
-    return line
+    results=''
+    i=0
+    n=len(line)
+    while i<n:
+        if line[i] == '[':
+            j= line.find (']', i+1)
+            if j == -1:
+                results += line [i:]
+                i = n
+            elif j+1 < n and line [j+1] == '()':
+                end = line.find(')', j+2)
+                if end == -1:
+                    results += line [i:]
+                    i = n
+                else:
+                    text = line [i+1:j]
+                    link = line [j+2:end]
+                    results += '<a href="' + link + '">' + text + '</a>'
+                    i = end + 1
+            else:
+                results += line [i]
+                i += 1
+    return results
 
 
 def compile_images(line):
@@ -310,4 +332,26 @@ def compile_images(line):
     >>> compile_images('This is an image of Mike Izbicki: ![Mike Izbicki](https://avatars1.githubusercontent.com/u/1052630?v=2&s=460)')
     'This is an image of Mike Izbicki: <img src="https://avatars1.githubusercontent.com/u/1052630?v=2&s=460" alt="Mike Izbicki" />'
     '''
-    return line
+    results=''
+    i=0
+    n=len(line)
+    while i<n:
+        if line[i] == '!' and i+1<n and line [i+1] =='[':
+            j= line.find (']', i+2)
+            if j == -1:
+                results += line [i:]
+                i = n
+            elif j+1 < n and line [j+1] == '()':
+                end = line.find(')', j+2)
+                if end == -1:
+                    results += line [i:]
+                    i = n
+                else:
+                    alt = line [i+2:j]
+                    src = line [j+2:end]
+                    results += '<img src="' + src + '"alt="' + alt + '/>'
+                    i = end + 1
+            else:
+                results += line [i]
+                i += 1
+    return results
