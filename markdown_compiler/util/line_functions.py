@@ -364,4 +364,4 @@ def compile_images(line):
         else:
             results += line[i]
             i += 1
-    return results 
+    return results
